@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +50,31 @@ public class EquipoController {
     public EquipoModel buscarPorId(@PathVariable String id) {
         return equipoService.buscarPorId(id).get();
     }
+
+    @DeleteMapping("/equipos/{id}")
+    public ResponseEntity<Map<String, String>> eliminarPorID(@PathVariable String id){
+        Boolean existe=equipoService.existById(id);
+        Map<String, String> respuesta= new HashMap<>();
+        if(!existe){
+            respuesta.put("mensaje", "No existe ese id");
+            return ResponseEntity.ok(respuesta);
+        }
+        equipoService.eliminar(id);
+        respuesta.put("mensaje", "El id se eliminó correctamente");
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @PutMapping("/equipos")
+    public ResponseEntity<Map<String, String>> actualizar(@RequestBody EquipoModel equipo, Errors error){
+        if(error.hasErrors()){
+            throwErrors(error);
+        }
+        equipoService.guardar(equipo);
+        Map<String, String> respuesta= new HashMap<>();
+        respuesta.put("mensaje", "El equipo se actualizó correctamente");
+        return ResponseEntity.ok(respuesta);
+    }
+
 
     public void throwErrors(Errors error) {
         String message = "";
