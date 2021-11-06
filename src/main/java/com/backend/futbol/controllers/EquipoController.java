@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.backend.futbol.exceptions.CustomExpeption;
 import com.backend.futbol.models.EquipoModel;
 import com.backend.futbol.services.EquipoService;
 
@@ -88,5 +89,6 @@ public class EquipoController {
             message += String.format("Parametro: %s - Mensaje: %s", e.getObjectName(), e.getDefaultMessage());
 
         }
+        throw new CustomExpeption(message);
     }
 }
